@@ -6,7 +6,6 @@ InformationPlatform Forum Module
 list data
 ```json
 {
-  "post_time" : 1528720726,
   "post_title" : "somestring",
   "tag" : ["sometag"],
   "author" : "someone",
