@@ -20,8 +20,9 @@ detail data
 ```json
 {
   "post_title" : "somestring",
-  "post_content" : "long string",
   "tag" : ["sometag"],
+  "post_content" : "long string",
+  "author" : "someone",
   "reply_count" : 10,
   "visited" : 10
 }
@@ -30,7 +31,7 @@ detail data
 comment data
 ```json
 {
-  "comment_time" : 1528720726,
+  "post_id" : "ObjectId2String",
   "comment_author" : "someone",
   "comment_content" : "long string",
   "reply_to_comment_id" : -1
