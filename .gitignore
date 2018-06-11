@@ -1,0 +1,6 @@
+
+.config/
+.node_repl_history
+.npm/
+.bash_history
+.DS_Store
