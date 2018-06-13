@@ -2,7 +2,7 @@ var express = require('express');
 var forum = require('../lib/index.js');
 var router = express.Router();
 
-router.get('/:sectionID/post', function(req, res, next) {
+router.get('/forum/:sectionID/post', function(req, res, next) {
   var sectionID = req.params['sectionID'];
   forum.getAllPost(sectionID, function(err, result){
     if(err) console.log(err);
@@ -16,7 +16,7 @@ router.get('/:sectionID/post', function(req, res, next) {
   });
 });
 
-router.post('/:sectionID/post', function(req, res, next) {
+router.post('/forum/:sectionID/post', function(req, res, next) {
   var sectionID = req.params['sectionID'];
   var data = req.body.data;
   forum.submitPost(sectionID, data, function(err, result){
@@ -38,7 +38,7 @@ router.post('/:sectionID/post', function(req, res, next) {
   });
 });
 
-router.get('/:sectionID/post/:postID', function(req, res, next) {
+router.get('/forum/:sectionID/post/:postID', function(req, res, next) {
   var sectionID = req.params['sectionID'];
   var postID = req.params['postID'];
   forum.toggleVisitIncrease(sectionID, postID);
@@ -54,7 +54,7 @@ router.get('/:sectionID/post/:postID', function(req, res, next) {
   });
 });
 
-router.post('/:sectionID/post/:postID', function(req, res, next) {
+router.post('/forum/:sectionID/post/:postID', function(req, res, next) {
   var sectionID = req.params['sectionID'];
   var postID = req.params['postID'];
   var data = req.body.data;
@@ -77,7 +77,7 @@ router.post('/:sectionID/post/:postID', function(req, res, next) {
   });
 });
 
-router.get('/:sectionID/post/:postID/comment', function(req, res, next) {
+router.get('/forum/:sectionID/post/:postID/comment', function(req, res, next) {
   var sectionID = req.params['sectionID'];
   var postID = req.params['postID'];
   forum.getAllComment(sectionID, postID, function(err, result){
@@ -92,7 +92,7 @@ router.get('/:sectionID/post/:postID/comment', function(req, res, next) {
   });
 });
 
-router.post('/:sectionID/post/:postID/comment', function(req, res, next) {
+router.post('/forum/:sectionID/post/:postID/comment', function(req, res, next) {
   var sectionID = req.params['sectionID'];
   var postID = req.params['postID'];
   var data = req.body.data;
@@ -116,7 +116,7 @@ router.post('/:sectionID/post/:postID/comment', function(req, res, next) {
   });
 });
 
-router.post('/:sectionID/post/:postID/comment/:commentID', function(req, res, next) {
+router.post('/forum/:sectionID/post/:postID/comment/:commentID', function(req, res, next) {
   var sectionID = req.params['sectionID'];
   var postID = req.params['postID'];
   var commentID = req.params['commentID'];
