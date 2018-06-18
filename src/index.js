@@ -78,7 +78,9 @@ forum.getPostDetail = function(section_id, post_id, callback){
 forum.submitPost = function(section_id, data, callback){
   var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
+  var new_ObjectId = mongo.String2ObjectId();
   var insertListObj = {
+    "_id" : new_ObjectId,
     "post_title" : data.title,
     "tag" : data.tag,
     "author" : data.author,
@@ -88,6 +90,7 @@ forum.submitPost = function(section_id, data, callback){
     "last_comment_time" : 0
   };
   var insertDetailObj = {
+    "_id" : new_ObjectId,
     "post_title" : data.title,
     "tag" : data.tag,
     "post_content" : data.content,
