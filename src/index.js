@@ -299,7 +299,7 @@ forum.updateComment = function(section_id, post_id, comment_id, data, callback){
     if(err) callback(err);
   });
   var comment_query = {
-    "_id" : mongo.String2ObjectId(comment_id);
+    "_id" : mongo.String2ObjectId(comment_id)
   };
   var update_comment_obj = {
     "post_id" : post_id,
