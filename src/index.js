@@ -37,9 +37,9 @@ function getCurrentTime(){
 
 forum.getAllPost = function(section_id, callback){
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
-  var findObj = {};
-  mongo.find(database, postlist_section_collection, findObj, function(err, result){
-    if(err) callback(err);
+    var findObj = {};
+    mongo.find(database, postlist_section_collection, { KEY:1 }, findObj, function(err, result){
+        if(err) callback(err);
     console.log(result);
     callback(null, result);
   });
