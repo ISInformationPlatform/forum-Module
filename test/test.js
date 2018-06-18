@@ -1,6 +1,6 @@
 var url = "mongodb://mongo:27017/";
 
-var mongo = require('../lib/mongo.js')(url);
+var mongo = require('../src/mongo.js')(url);
 
 var database = "test";
 var collection = "test";
@@ -17,3 +17,5 @@ mongo.find(database, collection, findObj1, function(err, result){
   console.log(mongo.ObjectId2UnixTimeStamp(result[0]._id));
   console.log(typeof mongo.String2ObjectId((result[0]._id).toString()));
 });
+
+console.log(mongo.String2ObjectId());
