@@ -59,7 +59,7 @@ forum.getPostDetail = function(section_id, post_id, callback){
   var findObj = {
     "_id" : mongo.String2ObjectId(post_id)
   };
-  mongo.find(database, postlist_section_collection, findObj, function(err, result){
+  mongo.find(database, postdetail_section_collection, findObj, function(err, result){
     if(err) callback(err);
     console.log(result);
     callback(null, result);
