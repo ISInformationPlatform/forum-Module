@@ -81,9 +81,9 @@ forum.submitPost = function(section_id, data, callback){
   var new_ObjectId = mongo.String2ObjectId();
   var insertListObj = {
     "_id" : new_ObjectId,
-    "post_title" : data.title,
+    "post_title" : data.post_title,
     "tag" : data.tag,
-    "author" : data.author,
+    "author" : data.post_author,
     "reply_count" : 0,
     "visited" : 0,
     "last_comment" : "null",
@@ -91,9 +91,9 @@ forum.submitPost = function(section_id, data, callback){
   };
   var insertDetailObj = {
     "_id" : new_ObjectId,
-    "post_title" : data.title,
+    "post_title" : data.post_title,
     "tag" : data.tag,
-    "post_content" : data.content,
+    "post_content" : data.post_content,
     "author" : data.author,
     "reply_count" : 0,
     "visited" : 0
