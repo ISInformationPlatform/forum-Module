@@ -8,7 +8,7 @@
 
 var forum = module.exports;
 
-var url = "mongodb://mongo:27017/",
+var url = "mongodb://localhost:27017/",
     database = "ISInformationPlatform",
     base_postlist_collection = "postlist",
     base_postdetail_collection = "postdetail",
