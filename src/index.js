@@ -8,13 +8,13 @@
 
 var forum = module.exports;
 
-var url = "mongodb://mongo:27017/",
+var url = "mongodb://localhost:27017/",
     database = "ISInformationPlatform",
     base_postlist_collection = "postlist",
     base_postdetail_collection = "postdetail",
     base_postcomment_collection = "postcomment";
 
-var mongo = require('./mongo.js')(url);
+var mongo = require('mongo')(url);
 
 /**
  ** getCurrentTime
@@ -75,15 +75,18 @@ forum.getPostDetail = function(section_id, post_id, callback){
  **
  */
 
-forum.submitPost = function(section_id, data, callback){
+forum.submitPost = async function(section_id, data){
   var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
+
   var new_ObjectId = mongo.String2ObjectId();
+
   var insertListObj = {
     "_id" : new_ObjectId,
     "post_title" : data.post_title,
     "tag" : data.tag,
-    "author" : data.post_author,
+    "post_author" : data.post_author,
+    "post_content" : data.post_content,
     "reply_count" : 0,
     "visited" : 0,
     "last_comment" : "null",
@@ -94,19 +97,24 @@ forum.submitPost = function(section_id, data, callback){
     "post_title" : data.post_title,
     "tag" : data.tag,
     "post_content" : data.post_content,
-    "author" : data.author,
+    "post_author" : data.post_author,
     "reply_count" : 0,
     "visited" : 0
   };
+
+  let async_result = null;
+
   mongo.insertOne(database, postlist_section_collection, insertListObj, function(err, result){
-    if(err) callback(err);
-    console.log(result.insertedCount);
+    if (err) throw err; 
+
+    mongo.insertOne(database, postdetail_section_collection, insertDetailObj, function (err, result) {
+      if (err) throw err;
+
+      async_result = result.insertedCount;
+    });
   });
-  mongo.insertOne(database, postdetail_section_collection, insertDetailObj, function(err, result){
-    if(err) callback(err);
-    console.log(result.insertedCount);
-    callback(null, result.insertedCount);
-  });
+
+  return async_result;
 }
 
 /**

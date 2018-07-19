@@ -1,15 +1,20 @@
 {
   "name": "forum",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "evi0s",
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.3",
-    "mongodb": "^3.0.10"
+    "mongodb": "^3.0.10",
+    "mongo": "git+https://github.com/brummp/MongoDB.git"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
   }
 }
