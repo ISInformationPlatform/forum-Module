@@ -329,9 +329,9 @@ mocha@^5.2.0:
     mkdirp "0.5.1"
     supports-color "5.4.0"
 
-"mongo@git+https://github.com/brummp/MongoDB.git":
-  version "0.0.7"
-  resolved "git+https://github.com/brummp/MongoDB.git#3e247f9747ea5afea48f659afb87bacad1da9117"
+"mongo@git+https://github.com/brummp/kqudie.git":
+  version "0.0.8"
+  resolved "git+https://github.com/brummp/kqudie.git#5f3fa2d731099ac9ccf5aec15aaaf6570096a4fc"
   dependencies:
     mongodb "^3.0.7"
 
