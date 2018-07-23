@@ -8,9 +8,9 @@ const list_collection = "postlist_1"
 const detail_collection = "postdetail_1"
 
 describe('submitPost', function () {
-    before(function (done) {
-        mongo.remove(database, list_collection, {}, {deleteAll: true}, function (err, result) {
-            done();
+    before(async function (){
+        mongo.remove(database,list_collection,{deleteAll:true},async function (err,result){
+            if(err) console.log(err);
         });
     });
 
@@ -41,15 +41,20 @@ describe('submitPost', function () {
 describe('getAllPost', function () {
     before(async function () {
         await mongo.remove(database, list_collection, {}, {deleteAll: true}, async function (err, result) {
-          var data = {
-              "post_title": "saber",
-              "post_author": "she",
-              "post_content": "hello",
-              "tag": null,
-          };
-
-          await forum.submitPost(1, data);
+            if(err) console.log(err);
         });
+        var insertDetailObj = {
+            "_id" : "5b513ec751f6ea0cd4ef5c74",
+            "post_title" : "saber",
+            "tag" : null,
+            "post_content" : "hello",
+            "post_author" : "she",
+            "reply_count" : 0,
+            "visited" : 0
+          };
+          await mongo.insertOne(database, detail_collection, insertDetailObj, function(err, result){
+            if(err) console.log(err);
+          });
     });
 
     it('testgetAllPost', function () {
@@ -76,9 +81,8 @@ describe('getPostDetail', function () {
         await mongo.remove(database, detail_collection, {}, {deleteAll: true}, async function(err, result){
           if(err) console.log(err);
 
-          new_ObjectId = mongo.String2ObjectId();
           var insertDetailObj = {
-            "_id" : new_ObjectId,
+            "_id" : "5b513ec751f6ea0cd4ef5c74",
             "post_title" : "saber",
             "tag" : null,
             "post_content" : "hello",
@@ -95,7 +99,7 @@ describe('getPostDetail', function () {
     });
 
     it('testgetPostDetail', function () {
-        forum.getPostDetail(1, mongo.ObjectId2String(new_ObjectId))
+        forum.getPostDetail(1, mongo.ObjectId2String("5b513ec751f6ea0cd4ef5c74"))
             .then(() => {
                 mongo.find(database, detail_collection, {}, {}, function (err, result) {
                     let item = result[0];
