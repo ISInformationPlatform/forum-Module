@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 
 const forum = require('../src');
-const mongo = require('mongo')("mongodb://mongo:27017/");
+const mongo = require('kqudie')("mongodb://mongo:27017/");
 
 const database = "ISInformationPlatform"
 const list_collection = "postlist_1"
