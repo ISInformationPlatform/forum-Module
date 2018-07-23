@@ -8,13 +8,13 @@
 
 var forum = module.exports;
 
-var url = "mongodb://localhost:27017/",
+var url = "mongodb://mongo:27017/",
     database = "ISInformationPlatform",
     base_postlist_collection = "postlist",
     base_postdetail_collection = "postdetail",
     base_postcomment_collection = "postcomment";
 
-var mongo = require('mongo')(url);
+var mongo = require('kqudie')(url);
 
 /**
  ** getCurrentTime
@@ -35,13 +35,13 @@ function getCurrentTime(){
  **
  */
 
-forum.getAllPost = function(section_id, callback){
+forum.getAllPost = async function(section_id){
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
     var findObj = {};
     mongo.find(database, postlist_section_collection, findObj, function(err, result){
-        if(err) callback(err);
-    console.log(result);
-    callback(null, result);
+        if(err) throw err;
+        console.log(result);
+        return result;
   });
 }
 
@@ -54,15 +54,15 @@ forum.getAllPost = function(section_id, callback){
  **
  */
 
-forum.getPostDetail = function(section_id, post_id, callback){
+forum.getPostDetail = async function(section_id, post_id){
   var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var findObj = {
     "_id" : mongo.String2ObjectId(post_id)
   };
   mongo.find(database, postdetail_section_collection, findObj, function(err, result){
-    if(err) callback(err);
+    if(err) throw err;
     console.log(result);
-    callback(null, result);
+    return result;
   });
 }
 
@@ -105,7 +105,7 @@ forum.submitPost = async function(section_id, data){
   let async_result = null;
 
   mongo.insertOne(database, postlist_section_collection, insertListObj, function(err, result){
-    if (err) throw err; 
+    if (err) throw err;
 
     mongo.insertOne(database, postdetail_section_collection, insertDetailObj, function (err, result) {
       if (err) throw err;
@@ -127,7 +127,7 @@ forum.submitPost = async function(section_id, data){
  **
  */
 
-forum.updatePostDetail = function(section_id, post_id, data, callback){
+forum.updatePostDetail = async function(section_id, post_id, data){
   var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var query = {
     "_id" : mongo.String2ObjectId(post_id)
@@ -145,9 +145,9 @@ forum.updatePostDetail = function(section_id, post_id, data, callback){
     }
   };
   mongo.update(database, postdetail_section_collection, query, updateObj, option, function(err, result){
-    if(err) callback(err);
+    if(err) throw err;
     console.log(result.result.n);
-    callback(null, result.result.n);
+    return result.result.n;
   });
 }
 
@@ -160,7 +160,7 @@ forum.updatePostDetail = function(section_id, post_id, data, callback){
  **
  */
 
-forum.toggleVisitIncrease = function(section_id, post_id, callback){
+forum.toggleVisitIncrease = async function(section_id, post_id){
   var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
   var query = {
@@ -171,15 +171,20 @@ forum.toggleVisitIncrease = function(section_id, post_id, callback){
       "visited" : 1
     }
   };
+
+  let async_result = null;
+
   mongo.update(database, postdetail_section_collection, query, updateObj, function(err, result){
-    if(err) callback(err);
-    console.log(result.result.n);
+    if(err) throw err;
+    mongo.update(database, postlist_section_collection, query, updateObj, function(err, result){
+      if(err) throw err;
+      console.log(result.result.n);
+      async_result = result.result.n;
+    });
   });
-  mongo.update(database, postlist_section_collection, query, updateObj, function(err, result){
-    if(err) callback(err);
-    console.log(result.result.n);
-    callback(null, result.result.n);
-  });
+
+  return async_result;
+
 }
 
 /**
@@ -191,7 +196,7 @@ forum.toggleVisitIncrease = function(section_id, post_id, callback){
  **
  */
 
-forum.toggleReplyIncrease = function(section_id, post_id, callback){
+forum.toggleReplyIncrease = async function(section_id, post_id){
   var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
   var query = {
@@ -202,15 +207,21 @@ forum.toggleReplyIncrease = function(section_id, post_id, callback){
       "reply_count" : 1
     }
   };
+
+  let async_result = null;
+
   mongo.update(database, postdetail_section_collection, query, updateObj, function(err, result){
-    if(err) callback(err);
-    console.log(result.result.n);
+    if(err) throw err;
+
+    mongo.update(database, postlist_section_collection, query, updateObj, function(err, result){
+      if(err) throw err;
+      console.log(result.result.n);
+      async_result = result.result.n;
+    });
   });
-  mongo.update(database, postlist_section_collection, query, updateObj, function(err, result){
-    if(err) callback(err);
-    console.log(result.result.n);
-    callback(null, result.result.n);
-  });
+
+  return async_result;
+
 }
 
 /**
@@ -222,15 +233,15 @@ forum.toggleReplyIncrease = function(section_id, post_id, callback){
  **
  */
 
-forum.getAllComment = function(section_id, post_id, callback){
+forum.getAllComment = async function(section_id, post_id){
   var commentlist_section_collection = base_postcomment_collection + "_" + section_id;
   var findObj = {
     "post_id" : post_id
   };
   mongo.find(database, commentlist_section_collection, findObj, function(err, result){
-    if(err) callback(err);
+    if(err) throw err;
     console.log(result);
-    callback(null, result);
+    return result;
   });
 }
 
