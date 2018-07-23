@@ -11,7 +11,7 @@
   "dependencies": {
     "express": "^4.16.3",
     "mongodb": "^3.0.10",
-    "mongo": "git+https://github.com/brummp/kqudie.git"
+    "kqudie": "git+https://github.com/brummp/kqudie.git"
   },
   "devDependencies": {
     "chai": "^4.1.2",

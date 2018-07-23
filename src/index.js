@@ -14,7 +14,7 @@ var url = "mongodb://localhost:27017/",
     base_postdetail_collection = "postdetail",
     base_postcomment_collection = "postcomment";
 
-var mongo = require('mongo')(url);
+var mongo = require('kqudie')(url);
 
 /**
  ** getCurrentTime
