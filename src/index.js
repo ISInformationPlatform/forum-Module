@@ -8,7 +8,7 @@
 
 var forum = module.exports;
 
-var url = "mongodb://mongo:27017/",
+var url = "mongodb://localhost:27017/",
     database = "ISInformationPlatform",
     base_postlist_collection = "postlist",
     base_postdetail_collection = "postdetail",
@@ -35,14 +35,14 @@ function getCurrentTime(){
  **
  */
 
-forum.getAllPost = async function(section_id){
+forum.getAllPost = async function (section_id) {
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
-    var findObj = {};
-    mongo.find(database, postlist_section_collection, findObj, function(err, result){
-        if(err) throw err;
-        console.log(result);
-        return result;
-  });
+
+  try {
+    return await mongo.find(database, postlist_section_collection, {});
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
@@ -54,15 +54,14 @@ forum.getAllPost = async function(section_id){
  **
  */
 
-forum.getPostDetail = async function(section_id, post_id){
-  var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
+forum.getPostDetail = async function (section_id, post_id) {
+  var postlist_section_collection = base_postlist_collection + "_" + section_id;
   var findObj = {
-    "_id" : mongo.String2ObjectId(post_id)
+    "_id": mongo.String2ObjectId(post_id)
   };
-  mongo.find(database, postdetail_section_collection, findObj, function(err, result){
-    if(err) throw err;
-    console.log(result);
-    return result;
+
+  return await mongo.find(database, postlist_section_collection, {
+    find: findObj, sort: {}
   });
 }
 
@@ -92,7 +91,7 @@ forum.submitPost = async function(section_id, data){
     "last_comment" : "null",
     "last_comment_time" : 0
   };
-  var insertDetailObj = {
+  /*var insertDetailObj = {
     "_id" : new_ObjectId,
     "post_title" : data.post_title,
     "tag" : data.tag,
@@ -100,21 +99,9 @@ forum.submitPost = async function(section_id, data){
     "post_author" : data.post_author,
     "reply_count" : 0,
     "visited" : 0
-  };
+  };*/
 
-  let async_result = null;
-
-  mongo.insertOne(database, postlist_section_collection, insertListObj, function(err, result){
-    if (err) throw err;
-
-    mongo.insertOne(database, postdetail_section_collection, insertDetailObj, function (err, result) {
-      if (err) throw err;
-
-      async_result = result.insertedCount;
-    });
-  });
-
-  return async_result;
+  return await mongo.insert(database, postlist_section_collection, insertListObj);
 }
 
 /**

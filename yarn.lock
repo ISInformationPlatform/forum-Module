@@ -272,8 +272,8 @@ ipaddr.js@1.6.0:
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.6.0.tgz#e3fa357b773da619f26e95f049d055c72796f86b"
 
 "kqudie@git+https://github.com/brummp/kqudie.git":
-  version "0.0.8"
-  resolved "git+https://github.com/brummp/kqudie.git#439b58a79c2b4ac1055521e3f9275fa15bc539e5"
+  version "0.1.0"
+  resolved "git+https://github.com/brummp/kqudie.git#66731486881fa44d239100c9637d91b4c2d7c6e9"
   dependencies:
     mongodb "^3.0.7"
 
@@ -426,8 +426,8 @@ safe-buffer@5.1.1:
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
 saslprep@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/saslprep/-/saslprep-1.0.0.tgz#2c4968a0bfbf249530cd597bc62870ccd4b41a24"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/saslprep/-/saslprep-1.0.1.tgz#b644e0ba25b156b652f3cb90df7542f896049ba6"
 
 semver@^5.1.0:
   version "5.5.0"
