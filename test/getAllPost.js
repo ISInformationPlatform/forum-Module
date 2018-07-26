@@ -38,7 +38,6 @@ describe('getAllPost', function () {
 async function getCollect() {
     try {
         let connect = await MongoClient.connect(url);
-        console.log(connect)
         let db = connect.db(DATABASE);
         let collect = db.collection(COLLECTION);
 
