@@ -238,15 +238,15 @@ forum.getAllComment = async function(section_id, post_id){
  ** @param section_id section id
  ** @param post_id post id (string)
  ** @param data comment data
- ** @param callback
+ ** 
  **
  */
 
-forum.submitComment = function(section_id, post_id, data, callback){
+forum.submitComment = async function(section_id, post_id, data){
   var commentlist_section_collection = base_postcomment_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
   forum.toggleReplyIncrease(section_id, post_id, function(err, result){
-    if(err) callback(err);
+    if(err) throw(err);
   });
   var query = {
     "_id" : mongo.String2ObjectId(post_id)
@@ -262,7 +262,7 @@ forum.submitComment = function(section_id, post_id, data, callback){
     }
   };
   mongo.update(database, postlist_section_collection, query, updateObj, option, function(err, result){
-    if(err) callback(err);
+    if(err) throw(err);
   });
   var insertObj = {
     "post_id" : post_id,
@@ -270,11 +270,14 @@ forum.submitComment = function(section_id, post_id, data, callback){
     "comment_content" : data.comment_content,
     "reply_to_comment_id" : data.reply_to_comment_id
   };
-  mongo.insertOne(database, commentlist_section_collection, insertObj, function(err, result){
-    if(err) callback(err);
-    console.log(result.insertedCount);
-    callback(null, result.insertedCount);
-  });
+  try {
+    let result = await mongo.insert(database, commentlist_section_collection, insertObj);
+      console.log(result);
+      return result;
+    
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
