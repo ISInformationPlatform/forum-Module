@@ -9,7 +9,7 @@ const DATABASE = "ISInformationPlatform";
 const COMMENT_COLLECTION = "postcomment_1";
 const POST_COLLECTION = "postlist_1";
 
-describe('toggleVisitIncrease',function(){
+describe('toggleReplyIncrease',function(){
     before(async function () {
         try {
             let connect = await getConnect();
@@ -32,7 +32,7 @@ describe('toggleVisitIncrease',function(){
     });
     it('test', async function () {
         let post_id = await forum.getAllPost(1);
-        await forum.toggleVisitIncrease(1, post_id[0]['_id']);
+        await forum.toggleReplyIncrease(1, post_id[0]['_id']);
 
         let connect = await getConnect();
 
@@ -41,7 +41,7 @@ describe('toggleVisitIncrease',function(){
         var result = await post_collect.find({}).sort({}).toArray();
 
         expect(result).to.have.lengthOf(3);
-        expect(result[0].visited).to.equal(1);
+        expect(result[0].reply_count).to.equal(1);
     });
 });
 
