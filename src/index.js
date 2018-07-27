@@ -11,7 +11,6 @@ var forum = module.exports;
 var url = "mongodb://localhost:27017/",
     database = "ISInformationPlatform",
     base_postlist_collection = "postlist",
-    base_postdetail_collection = "postdetail",
     base_postcomment_collection = "postcomment";
 
 var mongo = require('kqudie')(url);
@@ -31,7 +30,6 @@ function getCurrentTime(){
  ** getAllPost
  **
  ** @param section_id section id
- ** @param callback
  **
  */
 
@@ -50,7 +48,6 @@ forum.getAllPost = async function (section_id) {
  **
  ** @param section_id section id
  ** @param post_id post id (string)
- ** @param callback
  **
  */
 
@@ -70,12 +67,10 @@ forum.getPostDetail = async function (section_id, post_id) {
  **
  ** @param section_id section id
  ** @param data post data
- ** @param callback
  **
  */
 
 forum.submitPost = async function(section_id, data){
-  var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
 
   var new_ObjectId = mongo.String2ObjectId();
@@ -110,12 +105,11 @@ forum.submitPost = async function(section_id, data){
  ** @param section_id section id
  ** @param post_id post id (string)
  ** @param data json data
- ** @param callback
  **
  */
 
-forum.updatePostDetail = async function(section_id, post_id, data){
-  var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
+forum.updatePostList = async function(section_id, post_id, data){
+  var postdelist_section_collection = base_postdelist_collection + "_" + section_id;
   var query = {
     "_id" : mongo.String2ObjectId(post_id)
   };
@@ -131,11 +125,12 @@ forum.updatePostDetail = async function(section_id, post_id, data){
       "post_time" : getCurrentTime()
     }
   };
-  mongo.update(database, postdetail_section_collection, query, updateObj, option, function(err, result){
-    if(err) throw err;
-    console.log(result.result.n);
-    return result.result.n;
-  });
+  try {
+    await mongo.update(database, postdelist_section_collection, query, updateObj, option);
+    return ture;
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
@@ -143,12 +138,10 @@ forum.updatePostDetail = async function(section_id, post_id, data){
  **
  ** @param section_id section id
  ** @param post_id post id (string)
- ** @param callback
  **
  */
 
 forum.toggleVisitIncrease = async function(section_id, post_id){
-  var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
   var query = {
     "_id" : mongo.String2ObjectId(post_id)
@@ -158,11 +151,6 @@ forum.toggleVisitIncrease = async function(section_id, post_id){
       "visited" : 1
     }
   };
-  try {
-    await mongo.update(database, postdetail_section_collection, query, updateObj);
-  } catch (error) {
-    throw error;
-  }
   try {
     await mongo.update(database, postlist_section_collection, query, updateObj);
     return true;
@@ -176,12 +164,11 @@ forum.toggleVisitIncrease = async function(section_id, post_id){
  **
  ** @param section_id section id
  ** @param post_id post id (string)
- ** @param callback
+ ** 
  **
  */
 
 forum.toggleReplyIncrease = async function(section_id, post_id){
-  var postdetail_section_collection = base_postdetail_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
   var query = {
     "_id" : mongo.String2ObjectId(post_id)
@@ -191,12 +178,6 @@ forum.toggleReplyIncrease = async function(section_id, post_id){
       "reply_count" : 1
     }
   };
-
-  try {
-    await mongo.update(database, postdetail_section_collection, query, updateObj);
-  } catch (error) {
-    throw error;
-  }
   try {
     await mongo.update(database, postlist_section_collection, query, updateObj);
     return true;
@@ -210,7 +191,7 @@ forum.toggleReplyIncrease = async function(section_id, post_id){
  **
  ** @param section_id section id
  ** @param post_id post id (string)
- ** @param callback
+ ** 
  **
  */
 
@@ -231,7 +212,6 @@ forum.getAllComment = async function(section_id, post_id){
  ** @param section_id section id
  ** @param post_id post id (string)
  ** @param data comment data
- **
  **
  */
 
@@ -254,9 +234,11 @@ forum.submitComment = async function (section_id, post_id, data) {
       "last_comment_time": getCurrentTime()
     }
   };
-  mongo.update(database, postlist_section_collection, query, updateObj, option, function (err, result) {
-    if (err) throw (err);
-  });
+  try {
+     await mongo.update(database, postlist_section_collection, query, updateObj, option); 
+  } catch (error) {
+    throw error;
+  }
   var insertObj = {
     "post_id": post_id,
     "comment_author": data.comment_author,
@@ -278,11 +260,10 @@ forum.submitComment = async function (section_id, post_id, data) {
  ** @param post_id post id (string)
  ** @param comment_id comment id
  ** @param data comment data
- ** @param callback
  **
  */
 
-forum.updateComment = function(section_id, post_id, comment_id, data, callback){
+forum.updateComment = async function(section_id, post_id, comment_id, data){
   var commentlist_section_collection = base_postcomment_collection + "_" + section_id;
   var postlist_section_collection = base_postlist_collection + "_" + section_id;
   var list_query = {
@@ -298,9 +279,11 @@ forum.updateComment = function(section_id, post_id, comment_id, data, callback){
       "last_comment_time" : getCurrentTime()
     }
   };
-  mongo.update(database, postlist_section_collection, list_query, update_list_obj, option, function(err, result){
-    if(err) callback(err);
-  });
+  try {
+    await mongo.update(database, postlist_section_collection, list_query, update_list_obj, option); 
+  } catch (error) {
+    throw error;
+  }
   var comment_query = {
     "_id" : mongo.String2ObjectId(comment_id)
   };
@@ -310,9 +293,9 @@ forum.updateComment = function(section_id, post_id, comment_id, data, callback){
     "comment_content" : data.comment_content,
     "reply_to_comment_id" : data.reply_to_comment_id
   };
-  mongo.update(database, commentlist_section_collection, comment_query, update_comment_obj, option, function(err, result){
-    if(err) callback(err);
-    console.log(result.result.n);
-    callback(null, result.result.n);
-  });
+  try {
+    await mongo.update(database, commentlist_section_collection, comment_query, update_comment_obj, option);
+  } catch (error) {
+    throw error;
+  }
 }
