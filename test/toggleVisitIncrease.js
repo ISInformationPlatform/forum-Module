@@ -9,7 +9,7 @@ const DATABASE = "ISInformationPlatform";
 const COMMENT_COLLECTION = "postcomment_1";
 const POST_COLLECTION = "postlist_1";
 
-describe('submitComment',function(){
+describe('toggleReplyIncrease',function(){
     before(async function () {
         try {
             let connect = await getConnect();
@@ -31,25 +31,17 @@ describe('submitComment',function(){
         }
     });
     it('test', async function () {
-        var data = {
-            'comment_author': 'flt',
-            'comment_content': 'hhhh',
-            'reply_to_comment_id': '5'
-        };
-
         let post_id = await forum.getAllPost(1);
-        await forum.submitComment(1, post_id[0]['_id'], data);
+        await forum.toggleReplyIncrease(1, post_id[0]['_id']);
 
         let connect = await getConnect();
 
         let db = connect.db(DATABASE);
-        let post_collect = db.collection(COMMENT_COLLECTION);
+        let post_collect = db.collection(POST_COLLECTION);
         var result = await post_collect.find({}).sort({}).toArray();
 
-        expect(result).to.have.lengthOf(1);
-        expect(result[0].comment_author).to.equal('flt');
-        expect(result[0].comment_content).to.equal('hhhh');
-        expect(result[0].reply_to_comment_id).to.equal('5');
+        expect(result).to.have.lengthOf(3);
+        expect(result[0].reply_count).to.equal(1);
     });
 });
 

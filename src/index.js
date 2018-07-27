@@ -158,19 +158,17 @@ forum.toggleVisitIncrease = async function(section_id, post_id){
       "visited" : 1
     }
   };
-
-  let async_result = null;
-
-  mongo.update(database, postdetail_section_collection, query, updateObj, function(err, result){
-    if(err) throw err;
-    mongo.update(database, postlist_section_collection, query, updateObj, function(err, result){
-      if(err) throw err;
-      async_result = result.result.n;
-    });
-  });
-
-  return async_result;
-
+  try {
+    await mongo.update(database, postdetail_section_collection, query, updateObj);
+  } catch (error) {
+    throw error;
+  }
+  try {
+    await mongo.update(database, postlist_section_collection, query, updateObj);
+    return true;
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
@@ -194,20 +192,17 @@ forum.toggleReplyIncrease = async function(section_id, post_id){
     }
   };
 
-  let async_result = null;
-
-  mongo.update(database, postdetail_section_collection, query, updateObj, function(err, result){
-    if(err) throw err;
-
-    mongo.update(database, postlist_section_collection, query, updateObj, function(err, result){
-      if(err) throw err;
-      console.log(result.result.n);
-      async_result = result.result.n;
-    });
-  });
-
-  return async_result;
-
+  try {
+    await mongo.update(database, postdetail_section_collection, query, updateObj);
+  } catch (error) {
+    throw error;
+  }
+  try {
+    await mongo.update(database, postlist_section_collection, query, updateObj);
+    return true;
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
