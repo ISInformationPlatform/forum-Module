@@ -109,7 +109,7 @@ forum.submitPost = async function(section_id, data){
  */
 
 forum.updatePostList = async function(section_id, post_id, data){
-  var postdelist_section_collection = base_postdelist_collection + "_" + section_id;
+  var postlist_section_collection = base_postlist_collection + "_" + section_id;
   var query = {
     "_id" : mongo.String2ObjectId(post_id)
   };
@@ -126,8 +126,8 @@ forum.updatePostList = async function(section_id, post_id, data){
     }
   };
   try {
-    await mongo.update(database, postdelist_section_collection, query, updateObj, option);
-    return ture;
+    await mongo.update(database, postlist_section_collection, query, updateObj, option);
+    return true;
   } catch (error) {
     throw error;
   }
