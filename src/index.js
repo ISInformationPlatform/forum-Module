@@ -198,11 +198,12 @@ forum.toggleReplyIncrease = async function(section_id, post_id){
 forum.getAllComment = async function(section_id, post_id){
   var commentlist_section_collection = base_postcomment_collection + "_" + section_id;
   var findObj = {
-    "post_id" : post_id
+    "post_id" : mongo.String2ObjectId(post_id)
   };
-  mongo.find(database, commentlist_section_collection, findObj, function(err, result){
-    if(err) throw err;
-    return result;
+
+
+  return await mongo.find(database, commentlist_section_collection, {
+    find: findObj
   });
 }
 
