@@ -1,5 +1,6 @@
 # forum-Module
 [![Build Status](https://travis-ci.org/brummp/forum.svg?forum=master)](https://travis-ci.org/brummp/forum)
+[![Coverage Status](https://coveralls.io/repos/github/brummp/forum/badge.svg)](https://coveralls.io/github/brummp/forum)
 
 InformationPlatform Forum Module
 
