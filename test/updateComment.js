@@ -1,13 +1,9 @@
 var forum = require('../src');
 var expect = require('chai').expect;
-const { url } = require('./common');
+const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
 
 const MongoClient = require('mongodb').MongoClient;
-const mongo = require('kqudie')(url);
-
-const DATABASE = "ISInformationPlatform";
-const COMMENT_COLLECTION = "postcomment_1";
-const POST_COLLECTION = "postlist_1";
+const mongo = require('kqudie')(URL);
 
 describe('updateComment',function(){
     before(async function () {
@@ -66,7 +62,7 @@ describe('updateComment',function(){
 
 async function getConnect() {
     try {
-        let connect = await MongoClient.connect(url);
+        let connect = await MongoClient.connect(URL);
         return connect;
     } catch (err) {
         throw err;

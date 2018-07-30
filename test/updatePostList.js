@@ -1,17 +1,14 @@
 const expect = require('chai').expect;
-const { url } = require('./common');
+const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
 
 const MongoClient = require('mongodb').MongoClient;
 const forum = require('../src');
-
-const DATABASE = "ISInformationPlatform";
-const COLLECTION = "postlist_1";
 
 describe('submitPost', function () {
     before(async function () {
         try {
             let connect = await getConnect();
-            let collect = connect.db(DATABASE).collection(COLLECTION);
+            let collect = connect.db(DATABASE).collection(POST_COLLECTION);
 
             await collect.deleteMany({});
             connect.close();
@@ -39,7 +36,7 @@ describe('submitPost', function () {
             let post_id = await forum.getAllPost(1);
             await forum.updatePostList(1,post_id[0]['_id'],data);
             let connect = await getConnect();
-            var result = await connect.db(DATABASE).collection(COLLECTION).find({}).sort({}).toArray();
+            var result = await connect.db(DATABASE).collection(POST_COLLECTION).find({}).sort({}).toArray();
 
             expect(result).lengthOf(1);
             expect(result[0].post_title).to.be.equal("国际化");
@@ -53,7 +50,7 @@ describe('submitPost', function () {
 
 async function getConnect() {
     try {
-        let connect = await MongoClient.connect(url);
+        let connect = await MongoClient.connect(URL);
 
         return connect;
     } catch (err) {

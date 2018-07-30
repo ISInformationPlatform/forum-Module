@@ -1,12 +1,9 @@
 const expect = require('chai').expect;
-const { url } = require('./common');
+const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
 
 const MongoClient = require('mongodb').MongoClient;
 const forum = require('../src');
-const mongo = require('kqudie')(url);
-
-const DATABASE = "ISInformationPlatform"
-const COLLECTION = "postcomment_1"
+const mongo = require('kqudie')(URL);
 
 describe('getAllComment', function () {
     before(async function () {
@@ -38,9 +35,9 @@ describe('getAllComment', function () {
 
 async function getCollect() {
     try {
-        let connect = await MongoClient.connect(url);
+        let connect = await MongoClient.connect(URL);
         let db = connect.db(DATABASE);
-        let collect = db.collection(COLLECTION);
+        let collect = db.collection(COMMENT_COLLECTION);
 
         return collect;
     } catch (err) {
