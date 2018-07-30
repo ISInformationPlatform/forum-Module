@@ -6,52 +6,49 @@ const MongoClient = require('mongodb').MongoClient;
 const mongo = require('kqudie')(URL);
 
 describe('updateComment',function(){
+    var connect;
+    var db;
+    var post_collect;
+    var comment_collect;
     before(async function () {
         try {
-            let connect = await getConnect();
+            connect = await getConnect();
+            db = connect.db(DATABASE);
+            post_collect = db.collection(POST_COLLECTION);
+            comment_collect = db.collection(COMMENT_COLLECTION);
 
-            let db = connect.db(DATABASE);
-            let post_collect = db.collection(POST_COLLECTION);
-
-            await post_collect.deleteMany({});
+            await Promise.all([post_collect.deleteMany({}),comment_collect.deleteMany({})]);
             await post_collect.insertMany([
-                { a: 1 }, { a: 2 }, { a: 3 }
+                {  "_id" : mongo.String2ObjectId("5b5e6ab1d240333a98094490"),
+                "post_title" : 'wuwu',
+                "tag" : null,
+                "post_author" : 'hhji',
+                "post_content" : 'aa',
+                "reply_count" : 0,
+                "visited" : 0,
+                "last_comment" : "null",
+                "last_comment_time" : 0 }
             ]);
-
-            let comment_collect = db.collection(COMMENT_COLLECTION);
-            await comment_collect.deleteMany({});
-
-            connect.close();
+            await comment_collect.insertMany([
+                {
+                    '_id': mongo.String2ObjectId("5b5e6ab1d240333a98094497"),
+                    "post_id": mongo.String2ObjectId("5b5e6ab1d240333a98094490"),
+                    "comment_author": "hwfhc",
+                    "comment_content": "test"
+                }
+            ]);
         } catch (err) {
             throw err;
         }
     });
     it('test', async function () {
         var data = {
-            'comment_author': 'flt',
-            'comment_content': 'hhhh',
-            'reply_to_comment_id': '5'
-        };
-        var data1 = {
-            "post_title": "saber",
-            "post_author": "she",
-            "post_content": "hello",
-            "tag": null,
-        };
-        await forum.submitPost(1, data1);
-        var data2 = {
             'comment_author': 'ji',
             'comment_content': 'laji',
             'reply_to_comment_id': '6'
         };
-        let post_id = await forum.getAllPost(1);
-        await forum.submitComment(1, post_id[0]['_id'], data);  
-        let connect = await getConnect();
-        let db = connect.db(DATABASE);
-        let post_collect = db.collection(COMMENT_COLLECTION);
-        var result = await post_collect.find({}).sort({}).toArray();
-        await forum.updateComment(1,post_id[0]['_id'],result[0]['_id'],data2);
-        result= await post_collect.find({}).sort({}).toArray();
+        await forum.updateComment(1,mongo.String2ObjectId("5b5e6ab1d240333a98094490"),mongo.String2ObjectId("5b5e6ab1d240333a98094497"),data);
+        var result= await comment_collect.find({}).sort({}).toArray();
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].comment_author).to.equal('ji');
