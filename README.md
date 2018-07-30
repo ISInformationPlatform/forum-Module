@@ -1,8 +1,9 @@
 # forum-Module
+[![Build Status](https://travis-ci.org/brummp/forum.svg?forum=master)](https://travis-ci.org/brummp/forum)
+
 InformationPlatform Forum Module
 
 ## Database Struct
-
 list data
 ```json
 {

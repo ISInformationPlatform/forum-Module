@@ -241,7 +241,7 @@ forum.submitComment = async function (section_id, post_id, data) {
     throw error;
   }
   var insertObj = {
-    "post_id": post_id,
+    "post_id": mongo.String2ObjectId(post_id),
     "comment_author": data.comment_author,
     "comment_content": data.comment_content,
     "reply_to_comment_id": data.reply_to_comment_id
