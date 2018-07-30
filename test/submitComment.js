@@ -1,7 +1,7 @@
 var forum = require('../src');
 var expect = require('chai').expect;
+const { url } = require('./common');
 
-const url = "mongodb://localhost:27017/";
 const MongoClient = require('mongodb').MongoClient;
 const mongo = require('kqudie')(url);
 

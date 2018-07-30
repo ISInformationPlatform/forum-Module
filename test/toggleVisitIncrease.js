@@ -1,7 +1,7 @@
 var forum = require('../src');
 var expect = require('chai').expect;
+const { url } = require('./common');
 
-const url = "mongodb://localhost:27017/";
 const MongoClient = require('mongodb').MongoClient;
 const mongo = require('kqudie')(url);
 
@@ -19,7 +19,14 @@ describe('toggleVisitIncrease',function(){
 
             await post_collect.deleteMany({});
             await post_collect.insertMany([
-                { a: 1 }, { a: 2 }, { a: 3 }
+                {
+                    "visited": 0,
+                    "text": 'asdfa'
+                },
+                {
+                    "visited": 0,
+                    "text": 'asdfa'
+                }
             ]);
 
             let comment_collect = db.collection(COMMENT_COLLECTION);
@@ -31,8 +38,8 @@ describe('toggleVisitIncrease',function(){
         }
     });
     it('test', async function () {
-        let post_id = await forum.getAllPost(1);
-        await forum.toggleVisitIncrease(1, post_id[0]['_id']);
+        let list = await forum.getAllPost(1);
+        await forum.toggleVisitIncrease(1, list[0]['_id']);
 
         let connect = await getConnect();
 
@@ -40,8 +47,9 @@ describe('toggleVisitIncrease',function(){
         let post_collect = db.collection(POST_COLLECTION);
         var result = await post_collect.find({}).sort({}).toArray();
 
-        expect(result).to.have.lengthOf(3);
+        expect(result).to.have.lengthOf(2);
         expect(result[0].visited).to.equal(1);
+        expect(result[1].visited).to.equal(0);
     });
 });
 

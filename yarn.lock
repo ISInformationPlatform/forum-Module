@@ -595,8 +595,8 @@ kind-of@^3.0.2:
     is-buffer "^1.1.5"
 
 "kqudie@git+https://github.com/brummp/kqudie.git":
-  version "0.1.0"
-  resolved "git+https://github.com/brummp/kqudie.git#66731486881fa44d239100c9637d91b4c2d7c6e9"
+  version "0.2.0"
+  resolved "git+https://github.com/brummp/kqudie.git#f3d937c5438d506b8244b14fd747260321f4e6f0"
   dependencies:
     mongodb "^3.0.7"
 
@@ -672,6 +672,10 @@ mkdirp@0.5.1, mkdirp@0.5.x:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
     minimist "0.0.8"
+
+mocha-lcov-reporter@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/mocha-lcov-reporter/-/mocha-lcov-reporter-1.3.0.tgz#469bdef4f8afc9a116056f079df6182d0afb0384"
 
 mocha@^5.2.0:
   version "5.2.0"
