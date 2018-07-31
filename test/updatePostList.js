@@ -1,33 +1,33 @@
 const expect = require('chai').expect;
-const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
+const config = require('./config');
+const { URL,DATABASE } = config;
 
 const MongoClient = require('mongodb').MongoClient;
-const forum = require('../src');
-const mongo = require('kqudie')(URL);
+const ObjectId = require('mongodb').ObjectId;
+const forum = require('../src')(config);
 
-describe('submitPost', function () {
-    var connect;
-    var db;
-    var post_collect;
-    var comment_collect;
+describe('updatePostList', function () {
+    let post_first;
+    let comment_first;
+
     before(async function () {
         try {
-            connect = await getConnect();
-            db = connect.db(DATABASE);
-            post_collect = db.collection(POST_COLLECTION);
-            comment_collect = db.collection(COMMENT_COLLECTION);
+            let connect = await getConnect();
+            let db = connect.db(DATABASE);
+            post_first = db.collection('post_first');
+            comment_first = db.collection('comment_first');
 
-            await Promise.all([post_collect.deleteMany({}),comment_collect.deleteMany({})]);
-            await post_collect.insertMany([
-                {  "_id" : mongo.String2ObjectId("5b5e6ab1d240333a98094490"),
-                "post_title" : 'wuwu',
-                "tag" : null,
-                "post_author" : '龚佑成',
-                "post_content" : 'aa',
-                "reply_count" : 0,
-                "visited" : 0,
-                "last_comment" : "null",
-                "last_comment_time" : 0 }
+            await Promise.all([post_first.deleteMany({}), comment_first.deleteMany({})]);
+            await post_first.insertMany([
+                {
+                    "_id": new ObjectId("5b5e6ab1d240333a98094490"),
+                    "post_title": 'title',
+                    "tag": null,
+                    "post_author": 'author',
+                    "post_content": 'content',
+                    "reply_count": 0,
+                    "visited": 0
+                }
             ]);
         } catch (err) {
             throw err;
@@ -36,19 +36,18 @@ describe('submitPost', function () {
 
     it('test', async function () {
         var data = {
-            "post_title": "国际化",
-            "post_author": "龚佑成",
-            "post_content": "婷姐的项目",
+            "post_title": "title2",
+            "post_content": "content2",
             "tag": null,
         };
         try {
-            await forum.updatePostList(1,mongo.String2ObjectId("5b5e6ab1d240333a98094490"),data);
-            var result = await post_collect.find({}).sort({}).toArray();
+            await forum.updatePostList(1, "5b5e6ab1d240333a98094490", data);
+            var result = await post_first.find({}).sort({}).toArray();
 
             expect(result).lengthOf(1);
-            expect(result[0].post_title).to.be.equal("国际化");
-            expect(result[0].post_author).to.be.equal("龚佑成");
-            expect(result[0].post_content).to.be.equal("婷姐的项目");
+            expect(result[0].post_title).to.be.equal("title2");
+            expect(result[0].post_author).to.be.equal("author");
+            expect(result[0].post_content).to.be.equal("content2");
         } catch (error) {
             throw error;
         }

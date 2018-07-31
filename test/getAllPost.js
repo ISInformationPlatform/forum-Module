@@ -1,17 +1,35 @@
 const expect = require('chai').expect;
-const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
+const config = require('./config');
+const { URL,DATABASE } = config;
 
 const MongoClient = require('mongodb').MongoClient;
-const forum = require('../src');
+const forum = require('../src')(config);
 
 describe('getAllPost', function () {
     before(async function () {
         try {
-            let collect = await getCollect();
+            let connect = await MongoClient.connect(URL);
+            let db = connect.db(DATABASE);
+            let post_first = db.collection('post_first');
 
-            await collect.deleteMany({});
-            await collect.insertMany([
-                { a: 1 }, { a: 2 }, { a: 3 }
+            await post_first.deleteMany({});
+            await post_first.insertMany([
+                {
+                    "post_title": 'title1',
+                    "tag": null,
+                    "post_author": 'author1',
+                    "post_content": 'content1',
+                    "reply_count": 0,
+                    "visited": 0
+                },
+                {
+                    "post_title": 'title2',
+                    "tag": null,
+                    "post_author": 'author2',
+                    "post_content": 'content2',
+                    "reply_count": 0,
+                    "visited": 0
+                }
             ]);
         } catch (err) {
             throw err;
@@ -21,24 +39,13 @@ describe('getAllPost', function () {
     it('test', async function () {
 
         let result = await forum.getAllPost(1);
+
         let first = result[0];
         let second = result[1];
-        let third = result[2];
 
-        expect(first.a).to.be.equal(1);
-        expect(second.a).to.be.equal(2);
-        expect(third.a).to.be.equal(3);
+        expect(first.post_title).to.be.equal('title1');
+        expect(first.post_author).to.be.equal('author1');
+        expect(second.post_title).to.be.equal('title2');
+        expect(second.post_author).to.be.equal('author2');
     })
 });
-
-async function getCollect() {
-    try {
-        let connect = await MongoClient.connect(URL);
-        let db = connect.db(DATABASE);
-        let collect = db.collection(POST_COLLECTION);
-
-        return collect;
-    } catch (err) {
-        throw err;
-    }
-}

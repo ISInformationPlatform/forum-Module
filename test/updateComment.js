@@ -1,41 +1,43 @@
-var forum = require('../src');
 var expect = require('chai').expect;
-const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
+const config = require('./config');
+const { URL,DATABASE } = config;
 
 const MongoClient = require('mongodb').MongoClient;
-const mongo = require('kqudie')(URL);
+const ObjectId = require('mongodb').ObjectId;
+const forum = require('../src')(config);
 
 describe('updateComment',function(){
-    var connect;
-    var db;
-    var post_collect;
-    var comment_collect;
+    let post_first;
+    let comment_first;
+
     before(async function () {
         try {
-            connect = await getConnect();
-            db = connect.db(DATABASE);
-            post_collect = db.collection(POST_COLLECTION);
-            comment_collect = db.collection(COMMENT_COLLECTION);
+            let connect = await MongoClient.connect(URL);
+            let db = connect.db(DATABASE);
+            post_first = db.collection('post_first');
+            comment_first = db.collection('comment_first');
 
-            await Promise.all([post_collect.deleteMany({}),comment_collect.deleteMany({})]);
-            await post_collect.insertMany([
-                {  "_id" : mongo.String2ObjectId("5b5e6ab1d240333a98094490"),
-                "post_title" : 'wuwu',
-                "tag" : null,
-                "post_author" : 'hhji',
-                "post_content" : 'aa',
-                "reply_count" : 0,
-                "visited" : 0,
-                "last_comment" : "null",
-                "last_comment_time" : 0 }
-            ]);
-            await comment_collect.insertMany([
-                {
-                    '_id': mongo.String2ObjectId("5b5e6ab1d240333a98094497"),
-                    "post_id": mongo.String2ObjectId("5b5e6ab1d240333a98094490"),
-                    "comment_author": "hwfhc",
-                    "comment_content": "test"
-                }
+            await Promise.all([post_first.deleteMany({}), comment_first.deleteMany({})]);
+            await Promise.all([
+                post_first.insertMany([
+                    {
+                        "_id": new ObjectId("5b5e6ab1d240333a98094490"),
+                        "post_title": 'title',
+                        "tag": null,
+                        "post_author": 'author',
+                        "post_content": 'content',
+                        "reply_count": 0,
+                        "visited": 0
+                    }
+                ]),
+                comment_first.insertMany([
+                    {
+                        '_id': new ObjectId("5b5e6ab1d240333a98094497"),
+                        "post_id": new ObjectId("5b5e6ab1d240333a98094490"),
+                        "comment_author": "hwfhc",
+                        "comment_content": "test"
+                    }
+                ])
             ]);
         } catch (err) {
             throw err;
@@ -44,24 +46,13 @@ describe('updateComment',function(){
     it('test', async function () {
         var data = {
             'comment_author': 'ji',
-            'comment_content': 'laji',
-            'reply_to_comment_id': '6'
+            'comment_content': 'laji'
         };
-        await forum.updateComment(1,mongo.String2ObjectId("5b5e6ab1d240333a98094490"),mongo.String2ObjectId("5b5e6ab1d240333a98094497"),data);
-        var result= await comment_collect.find({}).sort({}).toArray();
+        await forum.updateComment(1, new ObjectId("5b5e6ab1d240333a98094490"), new ObjectId("5b5e6ab1d240333a98094497"), data);
+        var result = await comment_first.find({}).sort({}).toArray();
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].comment_author).to.equal('ji');
         expect(result[0].comment_content).to.equal('laji');
-        expect(result[0].reply_to_comment_id).to.equal('6');
     });
 });
-
-async function getConnect() {
-    try {
-        let connect = await MongoClient.connect(URL);
-        return connect;
-    } catch (err) {
-        throw err;
-    }
-}

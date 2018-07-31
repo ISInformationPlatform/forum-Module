@@ -1,59 +1,41 @@
-var forum = require('../src');
 var expect = require('chai').expect;
-const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
+const config = require('./config');
+const { URL,DATABASE } = config;
 
 const MongoClient = require('mongodb').MongoClient;
-const mongo = require('kqudie')(URL);
+const ObjectId = require('mongodb').ObjectId;
+const forum = require('../src')(config);
 
 describe('toggleVisitIncrease',function(){
+    var post_first;
+
     before(async function () {
         try {
-            let connect = await getConnect();
-
+            let connect = await MongoClient.connect(URL);
             let db = connect.db(DATABASE);
-            let post_collect = db.collection(POST_COLLECTION);
+            post_first = db.collection('post_first');
 
-            await post_collect.deleteMany({});
-            await post_collect.insertMany([
+            await post_first.deleteMany({});
+            await post_first.insertMany([
                 {
-                    "visited": 0,
-                    "text": 'asdfa'
-                },
-                {
-                    "visited": 0,
-                    "text": 'asdfa'
+                    "_id": new ObjectId("5b5e6ab1d240333a98094400"),
+                    "post_title": 'title',
+                    "tag": null,
+                    "post_author": 'author',
+                    "post_content": 'content',
+                    "reply_count": 0,
+                    "visited": 0
                 }
             ]);
-
-            let comment_collect = db.collection(COMMENT_COLLECTION);
-            await comment_collect.deleteMany({});
-
-            connect.close();
         } catch (err) {
             throw err;
         }
     });
     it('test', async function () {
-        let list = await forum.getAllPost(1);
-        await forum.toggleVisitIncrease(1, list[0]['_id']);
+        await forum.toggleVisitIncrease(1, new ObjectId("5b5e6ab1d240333a98094400"));
+        var result = await post_first.find({}).sort({}).toArray();
 
-        let connect = await getConnect();
-
-        let db = connect.db(DATABASE);
-        let post_collect = db.collection(POST_COLLECTION);
-        var result = await post_collect.find({}).sort({}).toArray();
-
-        expect(result).to.have.lengthOf(2);
+        expect(result).to.have.lengthOf(1);
         expect(result[0].visited).to.equal(1);
-        expect(result[1].visited).to.equal(0);
     });
 });
-
-async function getConnect() {
-    try {
-        let connect = await MongoClient.connect(URL);
-        return connect;
-    } catch (err) {
-        throw err;
-    }
-}

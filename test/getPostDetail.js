@@ -1,47 +1,50 @@
 const expect = require('chai').expect;
-const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
+const config = require('./config');
+const { URL,DATABASE } = config;
 
 const MongoClient = require('mongodb').MongoClient;
-const mongo = require('kqudie')(URL);
-
-const forum = require('../src');
+const ObjectId = require('mongodb').ObjectId;
+const forum = require('../src')(config);
 
 describe('getPostDetail', function () {
     before(async function () {
         try {
-            let collect = await getCollect();
+            let connect = await MongoClient.connect(URL);
+            let db = connect.db(DATABASE);
+            let post_first = db.collection('post_first');
 
-            await collect.deleteMany({});
-            await collect.insertOne({
-                'title': 'saber',
-                'content': 'she',
-            });
+            await post_first.deleteMany({});
+            await post_first.insertMany([
+                {
+                    "_id": new ObjectId("5b5e6ab1d240333a98094440"),
+                    "post_title": 'title1',
+                    "tag": null,
+                    "post_author": 'author1',
+                    "post_content": 'content1',
+                    "reply_count": 0,
+                    "visited": 0
+                },
+                {
+                    "_id": new ObjectId("5b5e6ab1d240333a98094441"),
+                    "post_title": 'title2',
+                    "tag": null,
+                    "post_author": 'author2',
+                    "post_content": 'content2',
+                    "reply_count": 0,
+                    "visited": 0
+                }
+            ]);
         } catch (err) {
             throw err;
         }
     });
 
     it('test', async function () {
-        let list = await mongo.find(DATABASE, POST_COLLECTION, {
-            find: {}, sort: {}
-        });
+        let result = await forum.getPostDetail(1, "5b5e6ab1d240333a98094440");
 
-        let result = await forum.getPostDetail(1, list[0]._id);
-
-        expect(result[0].title).to.be.equal("saber");
-        expect(result[0].content).to.be.equal("she");
+        expect(result[0].post_title).to.be.equal("title1");
+        expect(result[0].post_content).to.be.equal("content1");
+        expect(result[0].post_author).to.be.equal("author1");
     });
 
 });
-
-async function getCollect() {
-    try {
-        let connect = await MongoClient.connect(URL);
-        let db = connect.db(DATABASE);
-        let collect = db.collection(POST_COLLECTION);
-
-        return collect;
-    } catch (err) {
-        throw err;
-    }
-}
