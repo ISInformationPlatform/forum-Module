@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 const { URL,DATABASE,POST_COLLECTION,COMMENT_COLLECTION } = require('./common');
 
 const MongoClient = require('mongodb').MongoClient;
-const forum = require('../src');
+const forum = require('../src/index');
 const mongo = require('kqudie')(URL);
 
 describe('getAllComment', function () {

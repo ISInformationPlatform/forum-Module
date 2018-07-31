@@ -8,7 +8,7 @@
 
 var forum = module.exports;
 
-var url = "mongodb://www.lrworkshop.xin:27017/",
+var url = "mongodb://localhost:27017/",
     database = "ISInformationPlatform",
     base_postlist_collection = "postlist",
     base_postcomment_collection = "postcomment";
@@ -86,15 +86,6 @@ forum.submitPost = async function(section_id, data){
     "last_comment" : "null",
     "last_comment_time" : 0
   };
-  /*var insertDetailObj = {
-    "_id" : new_ObjectId,
-    "post_title" : data.post_title,
-    "tag" : data.tag,
-    "post_content" : data.post_content,
-    "post_author" : data.post_author,
-    "reply_count" : 0,
-    "visited" : 0
-  };*/
 
   return await mongo.insert(database, postlist_section_collection, insertListObj);
 }
