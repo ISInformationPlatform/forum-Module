@@ -1,5 +1,5 @@
 module.exports = {
-    URL: 'mongodb://www.lrworkshop.xin:27017/',
+    URL: 'mongodb://localhost:27017/',
     DATABASE: 'ISInformationPlatform',
     forum: [
         {
