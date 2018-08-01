@@ -38,12 +38,18 @@ function getPostCollectionBySectionId(section_id){
   if (!section_id)
     throw new Error('section_id can not be undefined');
 
+  if (typeof section_id != 'number')
+    throw new Error('section_id must be a number');
+
   return post_collection_map.get(section_id);
 }
 
 function getCommentCollectionBySectionId(section_id){
   if (!section_id)
     throw new Error('section_id can not be undefined');
+
+  if (typeof section_id != 'number')
+    throw new Error('section_id must be a number');
 
   return comment_collection_map.get(section_id);
 }
