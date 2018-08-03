@@ -1,6 +1,7 @@
 module.exports = {
     URL: 'mongodb://localhost:27017/',
     DATABASE: 'ISInformationPlatform',
+    post_item_number_a_page:1,
     forum: [
         {
             section_id: 1,

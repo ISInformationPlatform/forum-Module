@@ -11,6 +11,7 @@ var comment_collection_map = new Map();
 var config;
 var mongo;
 var database = null;
+var pageSize;
 
 var forum = module.exports = function (config_data) {
   if (!config_data)
@@ -18,7 +19,8 @@ var forum = module.exports = function (config_data) {
 
   config = config_data;
   mongo = require('kqudie')(config.URL);
-  database = config.DATABASE
+  database = config.DATABASE;
+  pageSize = config.post_item_number_a_page;
 
   post_collection_map = new Map();
   comment_collection_map = new Map();
@@ -70,16 +72,39 @@ function getCurrentTime(){
  **
  ** @param section_id section id
  **
+ ** @param page_num
  */
 
-forum.getAllPost = async function (section_id) {
-  let post_collect = getPostCollectionBySectionId(section_id);
+forum.getAllPost = async function (section_id,opt = {}) {
+  const post_collect = getPostCollectionBySectionId(section_id);
+  const page_num = opt.page_num || null;
 
-  try {
-    return await mongo.find(database, post_collect, {});
-  } catch (error) {
+  try{
+    var data = await mongo.find(database, post_collect, {});
+  }
+  catch(error){
     throw error;
   }
+ 
+  let total_page_num = Math.ceil(data.length / pageSize);
+  
+  if(!page_num)
+    return { 
+      "post_list": data,
+      "total_page_num": total_page_num
+    };
+
+  let page_list = [];
+
+  let position = (page_num - 1) * pageSize;
+  let finish = position + pageSize;
+  for(; position < finish; position++ )
+    page_list.push(data[position]);
+
+  return { 
+    'post_list': page_list,
+    'total_page_num': total_page_num
+  };
 }
 
 /**

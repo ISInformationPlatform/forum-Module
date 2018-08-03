@@ -36,16 +36,28 @@ describe('getAllPost', function () {
         }
     });
 
-    it('test', async function () {
+    it('test1', async function () {
 
         let result = await forum.getAllPost(1);
+        let first = result.post_list[0];
+        let second = result.post_list[1];
 
-        let first = result[0];
-        let second = result[1];
+        expect(result.total_page_num).to.be.equal(2);
 
         expect(first.post_title).to.be.equal('title1');
         expect(first.post_author).to.be.equal('author1');
         expect(second.post_title).to.be.equal('title2');
         expect(second.post_author).to.be.equal('author2');
+    });
+
+    it('test2', async function () {
+        opt = {
+            page_num: 2
+        }
+        let result = await forum.getAllPost(1,opt);
+        let first = result.post_list[0];
+        expect(first.post_title).to.be.equal('title2');
+        expect(first.post_author).to.be.equal('author2');
+        expect(result.total_page_num).to.be.equal(2);
     })
 });
