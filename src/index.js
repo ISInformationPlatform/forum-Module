@@ -146,8 +146,13 @@ forum.submitPost = async function(section_id, data){
     "reply_count" : 0,
     "visited" : 0
   };
-
-  return await mongo.insert(database, post_collect, insertListObj);
+  try {
+    await mongo.insert(database, post_collect, insertListObj);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+  return 
 }
 
 /**
