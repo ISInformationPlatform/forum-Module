@@ -98,10 +98,11 @@ forum.getAllPost = async function (section_id,opt = {}) {
 
   let position = (page_num - 1) * pageSize;
   let finish = position + pageSize;
-  for(; position < finish; position++ )
-    page_list.push(data[position]);
+  for (; position < finish; position++)
+    if (data[position])
+      page_list.push(data[position]);
 
-  return { 
+  return {
     'post_list': page_list,
     'total_page_num': total_page_num
   };
