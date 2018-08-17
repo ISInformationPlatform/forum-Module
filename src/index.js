@@ -77,15 +77,23 @@ function getCurrentTime(){
 
 forum.getAllPost = async function (section_id,opt = {}) {
   const post_collect = getPostCollectionBySectionId(section_id);
-  const page_num = opt.page_num || null;
+  const page_num = parseInt(opt.page_num) || 1;
+  const tag_filter = parseInt(opt.tag_filter) || 0;
 
-  try{
-    var data = await mongo.find(database, post_collect, {});
+  try {
+    var data;
+
+    if (tag_filter === 0)
+      data = await mongo.find(database, post_collect);
+    else
+      data = await mongo.find(database, post_collect, {
+        find: { post_tag: { $bitsAllSet: tag_filter } }
+      });
   }
-  catch(error){
+  catch (error) {
     throw error;
   }
- 
+
   let total_page_num = Math.ceil(data.length / pageSize);
   
   if(!page_num)
@@ -98,11 +106,12 @@ forum.getAllPost = async function (section_id,opt = {}) {
 
   let position = (page_num - 1) * pageSize;
   let finish = position + pageSize;
-  for (; position < finish; position++)
+
+  for(; position < finish; position++ )
     if (data[position])
       page_list.push(data[position]);
 
-  return {
+  return { 
     'post_list': page_list,
     'total_page_num': total_page_num
   };
@@ -140,8 +149,8 @@ forum.submitPost = async function(section_id, data){
   let post_collect = getPostCollectionBySectionId(section_id);
 
   var insertListObj = {
-    "post_title" : data.post_title,
-    "tag" : data.tag,
+    "post_title": data.post_title,
+    "post_tag" : data.post_tag,
     "post_author" : data.post_author,
     "post_content" : data.post_content,
     "reply_count" : 0,
