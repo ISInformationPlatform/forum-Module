@@ -70,4 +70,33 @@ describe('submitPost', function () {
             throw error;
         }
     });
+
+    it('section 2 insert(sticky)', async function () {
+        var data = {
+            "post_title": "saber",
+            "post_author": "she",
+            "post_content": "hello",
+            "tag": null,
+        };
+
+        var opt = {
+            "sticky" : true
+        };
+
+        try {
+            await forum.submitPost(2, data, opt);
+            var result = await post_second.find({}).sort({}).toArray();
+
+            expect(result).lengthOf(2);
+            expect(result[1].post_title).to.be.equal("saber");
+            expect(result[1].post_author).to.be.equal("she");
+            expect(result[1].post_content).to.be.equal("hello");
+            expect(result[1].reply_count).to.be.equal(0);
+            expect(result[1].visited).to.be.equal(0);
+            expect(result[1].sticky).to.be.equal(true);
+        } catch (error) {
+            throw error;
+        }
+    });
+
 });

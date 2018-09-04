@@ -26,7 +26,8 @@ describe('updatePostList', function () {
                     "post_author": 'author',
                     "post_content": 'content',
                     "reply_count": 0,
-                    "visited": 0
+                    "visited": 0,
+                    "sticky" : false
                 }
             ]);
         } catch (err) {
@@ -40,8 +41,11 @@ describe('updatePostList', function () {
             "post_content": "content2",
             "tag": null,
         };
+        let opt = {
+            "sticky" : true 
+        }
         try {
-            await forum.updatePostList(1, "5b5e6ab1d240333a98094490", data);
+            await forum.updatePostList(1, "5b5e6ab1d240333a98094490", data, opt);
             var result = await post_first.find({}).sort({}).toArray();
 
             expect(result).lengthOf(1);

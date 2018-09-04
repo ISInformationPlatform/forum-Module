@@ -171,8 +171,10 @@ forum.getPostDetail = async function (section_id, post_id) {
  **
  */
 
-forum.submitPost = async function(section_id, data){
+forum.submitPost = async function(section_id, data, opt = {}){
   let post_collect = getPostCollectionBySectionId(section_id);
+
+  let sticky = opt.sticky||false;
 
   var insertListObj = {
     "post_title": data.post_title,
@@ -180,7 +182,8 @@ forum.submitPost = async function(section_id, data){
     "post_author" : data.post_author,
     "post_content" : data.post_content,
     "reply_count" : 0,
-    "visited" : 0
+    "visited" : 0,
+    "sticky" : sticky
   };
   try {
     await mongo.insert(database, post_collect, insertListObj);
@@ -200,8 +203,10 @@ forum.submitPost = async function(section_id, data){
  **
  */
 
-forum.updatePostList = async function(section_id, post_id, data){
+forum.updatePostList = async function(section_id, post_id, data, opt ={}){
   let post_collect = getPostCollectionBySectionId(section_id);
+
+  let sticky = opt.sticky||false;
 
   var query = {
     "_id": mongo.String2ObjectId(post_id)
@@ -215,6 +220,7 @@ forum.updatePostList = async function(section_id, post_id, data){
       "post_title": data.post_title,
       "post_content": data.post_content,
       "tag": data.tag,
+      "sticky" : sticky,
       "post_time": getCurrentTime()
     }
   };
