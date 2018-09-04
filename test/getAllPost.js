@@ -16,7 +16,7 @@ describe('getAllPost', function () {
             await post_first.insertMany([
                 {
                     "post_title": 'title1',
-                    "tag": null,
+                    "tag": 0,
                     "post_author": 'author1',
                     "post_content": 'content1',
                     "reply_count": 0,
@@ -24,7 +24,7 @@ describe('getAllPost', function () {
                 },
                 {
                     "post_title": 'title2',
-                    "tag": null,
+                    "tag": 0,
                     "post_author": 'author2',
                     "post_content": 'content2',
                     "reply_count": 0,
@@ -38,11 +38,19 @@ describe('getAllPost', function () {
 
     it('test1', async function () {
 
-        let result = await forum.getAllPost(1);
-        let first = result.post_list[0];
-        let second = result.post_list[1];
+        let page1 = await forum.getAllPost(1,{
+            page_num: 1
+        });
 
-        expect(result.total_page_num).to.be.equal(2);
+        let page2 = await forum.getAllPost(1, {
+            page_num: 2 
+        });
+
+        let first = page1.post_list[0];
+        let second = page2.post_list[0];
+
+        expect(page1.total_page_num).to.be.equal(2);
+        expect(page2.total_page_num).to.be.equal(2);
 
         expect(first.post_title).to.be.equal('title1');
         expect(first.post_author).to.be.equal('author1');
