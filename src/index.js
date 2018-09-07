@@ -11,7 +11,8 @@ var comment_collection_map = new Map();
 var config;
 var mongo;
 var database = null;
-var pageSize;
+var post_item_number_a_page;
+var sticky_post_item_number_a_page;
 
 var forum = module.exports = function (config_data) {
   if (!config_data)
@@ -20,7 +21,8 @@ var forum = module.exports = function (config_data) {
   config = config_data;
   mongo = require('kqudie')(config.URL);
   database = config.DATABASE;
-  pageSize = config.post_item_number_a_page;
+  post_item_number_a_page = config.post_item_number_a_page;
+  sticky_post_item_number_a_page = config.sticky_post_item_number_a_page;
 
   post_collection_map = new Map();
   comment_collection_map = new Map();
@@ -125,9 +127,16 @@ forum.getAllPost = async function (section_id,opt = {}) {
     throw error;
   }
 
+  var pageSize;
+
+  if (sticky)
+    pageSize = sticky_post_item_number_a_page;
+  else
+    pageSize = post_item_number_a_page;
+
   let total_page_num = Math.ceil(data.length / pageSize);
-  
-  if(!page_num)
+
+  if (!page_num)
     return { 
       "post_list": data,
       "total_page_num": total_page_num
