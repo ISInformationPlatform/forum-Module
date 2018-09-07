@@ -105,16 +105,21 @@ forum.getAllPost = async function (section_id,opt = {}) {
   const post_collect = getPostCollectionBySectionId(section_id);
   const page_num = parseInt(opt.page_num) || 1;
   const tag_filter = parseInt(opt.tag_filter) || 0;
+  const sticky = opt.sticky || false;
+
+  var opt = {
+    find: {},
+    sort: {}
+  };
+
+  if (tag_filter !== 0)
+    opt.find.post_tag = { $bitsAllSet: tag_filter };
+
+  if (sticky)
+    opt.find.sticky = true;
 
   try {
-    var data;
-
-    if (tag_filter === 0)
-      data = await mongo.find(database, post_collect);
-    else
-      data = await mongo.find(database, post_collect, {
-        find: { post_tag: { $bitsAllSet: tag_filter } }
-      });
+    var data = await mongo.find(database, post_collect, opt);
   }
   catch (error) {
     throw error;
