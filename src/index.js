@@ -106,6 +106,7 @@ function getCurrentTime(){
 forum.getAllPost = async function (section_id,opt = {}) {
   const post_collect = getPostCollectionBySectionId(section_id);
   const page_num = parseInt(opt.page_num) || 1;
+  const person_post = opt.person_post || null;
   const tag_filter = parseInt(opt.tag_filter) || 0;
   const find_filter = opt.find_filter || 0;
   const sticky = opt.sticky || false;
@@ -118,6 +119,9 @@ forum.getAllPost = async function (section_id,opt = {}) {
   if (tag_filter !== 0)
     opt.find.post_tag = { $bitsAllSet: tag_filter };
 
+  if (person_post)
+    opt.find.post_author = person_post;
+  
   if (sticky)
     opt.find.sticky = true;
   
