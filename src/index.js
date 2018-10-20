@@ -108,7 +108,7 @@ forum.getAllPost = async function (section_id,opt = {}) {
   const page_num = parseInt(opt.page_num) || 1;
   const person_post = opt.person_post || null;
   const tag_filter = parseInt(opt.tag_filter) || 0;
-  const find_filter = opt.find_filter || 0;
+  const search_text = opt.search_text || 0;
   const sticky = opt.sticky || false;
 
   var opt = {
@@ -125,12 +125,12 @@ forum.getAllPost = async function (section_id,opt = {}) {
   if (sticky)
     opt.find.sticky = true;
   
-  if(find_filter !== 0)
-    opt.find.post_title = { $regex: new RegExp(find_filter) };
+  if(search_text)
+    opt.find.post_title = { $regex: new RegExp(search_text) };
 
   try {
     var data = await mongo.find(database, post_collect, opt);
-  }
+ }
   catch (error) {
     throw error;
   }
@@ -202,6 +202,7 @@ forum.submitPost = async function(section_id, data, opt = {}){
     "post_title": data.post_title,
     "post_tag" : data.post_tag,
     "post_author" : data.post_author,
+    "post_nickname" : data.post_nickname,
     "post_content" : data.post_content,
     "reply_count" : 0,
     "visited" : 0,
@@ -342,10 +343,11 @@ forum.submitComment = async function (section_id, post_id, data) {
 
   await forum.toggleReplyIncrease(section_id, post_id);
 
- var insertObj = {
+  var insertObj = {
     "post_id": mongo.String2ObjectId(post_id),
     "comment_author": data.comment_author,
-    "comment_content": data.comment_content
+    "comment_content": data.comment_content,
+    "comment_nickname": data.comment_nickname
   };
   try {
     let result = await mongo.insert(database, comment_collect, insertObj);
