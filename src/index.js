@@ -108,11 +108,7 @@ forum.getAllPost = async function (section_id,opt = {}) {
   const page_num = parseInt(opt.page_num) || 1;
   const person_post = opt.person_post || null;
   const tag_filter = parseInt(opt.tag_filter) || 0;
-<<<<<<< HEAD
   const search_text = opt.search_text || 0;
-=======
-  const search = opt.search_text || 0;
->>>>>>> 122595fe6755fb979aa28562f1459c502ea74eda
   const sticky = opt.sticky || false;
 
   var opt = {
